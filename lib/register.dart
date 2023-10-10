@@ -48,7 +48,7 @@ class _RegisterState extends State<Register> {
     print(url.toString());
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'accept': 'application/json'
+      'Accept': 'application/json'
     };
     final body = jsonEncode({
       "email": email,
