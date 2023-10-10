@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs. clear();
   var auth_token = prefs.getString('auth_token');
   print(auth_token);
   runApp(MaterialApp(

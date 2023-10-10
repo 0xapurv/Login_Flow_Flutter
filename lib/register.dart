@@ -10,11 +10,25 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  late String name, email, mobile, password;
+  late String username,
+      email,
+      mobile,
+      password,
+      phone,
+      firstName,
+      lastName,
+      name;
   final _key = GlobalKey<FormState>();
   var url = Uri.https('curr.logiclane.tech', '/api/auth/local/signup');
 
   bool _secureText = true;
+
+  void splitFullName(String name) {
+    List<String> nameParts = name.split(' ');
+
+    firstName = nameParts.first;
+    lastName = nameParts.length > 1 ? nameParts.last : '';
+  }
 
   showHide() {
     setState(() {
@@ -39,11 +53,11 @@ class _RegisterState extends State<Register> {
     final body = jsonEncode({
       "email": email,
       "password": password,
-      "username": name,
-      "firstName": "string",
-      "lastName": "string",
-      "middleName": "string",
-      "phoneNumber": "string",
+      "username": username,
+      "firstName": firstName,
+      "lastName": lastName,
+      "middleName": " ",
+      "phoneNumber": phone,
       "walletPin": 0,
       "deviceId": "string",
       "deviceIp": "string",
@@ -62,6 +76,7 @@ class _RegisterState extends State<Register> {
       body: body,
       headers: headers,
     );
+    print(response.body);
 
     if (response.statusCode == 201) {
       setState(() {
@@ -70,7 +85,6 @@ class _RegisterState extends State<Register> {
           MaterialPageRoute(builder: (context) => Login()),
         );
       });
-      // print(id);
       registerToast("Register sucessfull");
     } else if (response.statusCode == 400) {
       registerToast("A user with that username already exists");
@@ -125,7 +139,7 @@ class _RegisterState extends State<Register> {
                         height: 25,
                       ),
 
-                      //card for Fullname TextFormField
+                      //card for Username TextFormField
                       Card(
                         elevation: 6.0,
                         child: TextFormField(
@@ -134,7 +148,7 @@ class _RegisterState extends State<Register> {
                               return "Please insert Username";
                             }
                           },
-                          onSaved: (e) => name = e!,
+                          onSaved: (e) => username = e!,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -147,6 +161,34 @@ class _RegisterState extends State<Register> {
                               ),
                               contentPadding: EdgeInsets.all(18),
                               labelText: "Username"),
+                        ),
+                      ),
+
+                      // Card for Name TextFormField
+                      Card(
+                        elevation: 6.0,
+                        child: TextFormField(
+                          validator: (e) {
+                            if (e!.isEmpty) {
+                              return "Please insert Full Name";
+                            }
+                          },
+                          onSaved: (e) {
+                            splitFullName(e!);
+                            name = e;
+                          },
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                          ),
+                          decoration: const InputDecoration(
+                              prefixIcon: Padding(
+                                padding: EdgeInsets.only(left: 20, right: 15),
+                                child: Icon(Icons.person_3_outlined, color: Colors.black),
+                              ),
+                              contentPadding: EdgeInsets.all(18),
+                              labelText: "Name"),
                         ),
                       ),
 
@@ -174,6 +216,35 @@ class _RegisterState extends State<Register> {
                               labelText: "Email"),
                         ),
                       ),
+                      
+                      //Card for Phone Number TextFormField
+                      Card(
+                        elevation: 6.0,
+                        child: TextFormField(
+                          maxLength: 10,
+                          validator: (e) {
+                            if (e!.isEmpty) {
+                              return "Please insert Phone Number";
+                            }
+                          },
+                          onSaved: (e) => phone = e!,
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                          ),
+                          decoration: const InputDecoration(
+                              prefixIcon: Padding(
+                                padding: EdgeInsets.only(left: 20, right: 15),
+                                child: Icon(Icons.phone, color: Colors.black),
+                              ),
+                              contentPadding: EdgeInsets.all(18),
+                              labelText: "Phone Number"),
+                        ),
+                      ),
+
+                      // Card for password TextFormField
                       Card(
                         elevation: 6.0,
                         child: TextFormField(
@@ -200,6 +271,7 @@ class _RegisterState extends State<Register> {
                               labelText: "Password"),
                         ),
                       ),
+
 
                       const Padding(
                         padding: EdgeInsets.all(12.0),
